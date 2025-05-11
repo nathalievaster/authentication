@@ -1,4 +1,4 @@
-// Importerar nödvändiga paket
+// Importer of packages
 const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
@@ -31,7 +31,7 @@ function authenticateToken(req, res, next) {
     });
 }
 
-// Startar applikationen
+// Starting upp the application
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });

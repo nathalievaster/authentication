@@ -12,24 +12,35 @@ const db = new sqlite3.Database(process.env.DATABASE);
 router.post("/register", async (req, res) => {
     try {
         const { username, password } = req.body;
-        // Validation - vidare utveckla senare
+
+        // Validation
         if (!username || !password) {
             return res.status(400).json({ error: "You must fill in your username/password." });
         }
-        // Check if user is already existing - utveckla
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        // Correct input
-        const sql = `INSERT INTO users(username, password) VALUES(?,?)`;
-        db.run(sql, [username, hashedPassword], (err) => {
+        // Check if user already exists
+        const checkSql = `SELECT * FROM users WHERE username = ?`;
+        db.get(checkSql, [username], async (err, row) => {
             if (err) {
-                res.status(400).json({message: "Error creating user..."});
-            } else {
-                res.status(201).json({ message: "User created" });
-
+                return res.status(500).json({ message: "Database error." });
             }
 
+            if (row) {
+                return res.status(409).json({ message: "User already exists." });
+            }
+
+            // Hash password
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Insert user into DB
+            const insertSql = `INSERT INTO users(username, password) VALUES(?, ?)`;
+            db.run(insertSql, [username, hashedPassword], (err) => {
+                if (err) {
+                    return res.status(400).json({ message: "Error creating user..." });
+                } else {
+                    return res.status(201).json({ message: "User created" });
+                }
+            });
         });
 
     } catch (error) {
