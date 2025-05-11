@@ -9,10 +9,26 @@ npm install -y
 npm install express dotenv body-parser jsonwebtoken bcrypt sqlite3
 npm install nodemon --save-dev
 ```
+Kör därefter installations-skriptet, och starta upp serven med npm run serve.
 
-## Funktionaliteter
+### Förklaring:
 
-- Hashade lösenord med bcrypt
-- JWT's (JSON Web Token)
-- SQlite3 som databas
+- `bcrypt` används för att hasha lösenord.
+- `sqlite3` används som databas.
+- `jsonwebtoken` är för token-hantering.
+- `body-parser` används för att tolka JSON.
+- `express` är serverramverket.
+- `dotenv` för att läsa `.env`-variabler.
+- `nodemon` för att automatiskt starta om servern vid kodändringar (endast i utveckling).
 
+
+## API-endpoints
+
+Nedan beskrivs hur du kan interagera med API:et:
+
+| Metod | Ändpunkt         | Beskrivning                                                   |
+|-------|------------------|---------------------------------------------------------------|
+| GET   | `/api`           | En enkel test- eller infopunkt. Kan användas för ping/check. |
+| POST  | `/api/register`  | Registrerar en ny användare. Kräver `username` och `password` i body. |
+| POST  | `/api/login`     | Loggar in användaren och returnerar en JWT-token. Kräver `username` och `password`. |
+| GET   | `/api/secret`    | Skyddad route som kräver giltig JWT-token i Authorization-header. |
