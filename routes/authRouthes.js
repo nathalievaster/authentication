@@ -14,8 +14,17 @@ router.post("/register", async (req, res) => {
         const { username, password } = req.body;
 
         // Validation
-        if (!username || !password) {
-            return res.status(400).json({ error: "You must fill in your username/password." });
+        const errors = [];
+
+        if (!username) {
+            errors.push("You must fill in your username.");
+        }
+        if (!password) {
+            errors.push("You must fill in your password.");
+        }
+
+        if (errors.length > 0) {
+            return res.status(400).json({ errors });
         }
 
         // Check if user already exists
@@ -56,31 +65,31 @@ router.post("/login", async (req, res) => {
         if (!username || !password) {
             return res.status(400).json({ error: "You must fill in your username/password." });
         }
-       // Check if user exists
-       const sql = `SELECT * FROM users WHERE username =?`;
-       db.get(sql, [username], async (err, row) => {
-        if(err) {
-            res.status(400).json({message: "Error authenticating..."});
-        } else if (!row) {
-            res.status(401).json({message: "Incorrect username/password!"});
-        } else  {
-            // Check password
-            const passwordMatch = await bcrypt.compare(password, row.password);
-
-            if (!passwordMatch) {
-                res.status(401).json({message: "Incorrect username/password!"});
+        // Check if user exists
+        const sql = `SELECT * FROM users WHERE username =?`;
+        db.get(sql, [username], async (err, row) => {
+            if (err) {
+                res.status(400).json({ message: "Error authenticating..." });
+            } else if (!row) {
+                res.status(401).json({ message: "Incorrect username/password!" });
             } else {
-                // Create JWT
-                const payload = {username: username};
-                const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '2h'});
-                const response = {
-                    message: "User logged in!",
-                    token: token
+                // Check password
+                const passwordMatch = await bcrypt.compare(password, row.password);
+
+                if (!passwordMatch) {
+                    res.status(401).json({ message: "Incorrect username/password!" });
+                } else {
+                    // Create JWT
+                    const payload = { username: username };
+                    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '2h' });
+                    const response = {
+                        message: "User logged in!",
+                        token: token
+                    }
+                    res.status(200).json({ response });
                 }
-                res.status(200).json({ response });
             }
-        }
-       });
+        });
     } catch (error) {
         res.status(500).json({ error: "Server error" });
     }
