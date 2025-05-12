@@ -6,7 +6,7 @@ Ett enkelt REST-API byggt med Express, vilken hanterar registrering och inloggni
 git clone https://github.com/nathalievaster/authentication.git
 cd authentication
 npm install -y
-npm install express dotenv body-parser jsonwebtoken bcrypt sqlite3
+npm install express dotenv body-parser jsonwebtoken bcrypt sqlite3 cors
 npm install nodemon --save-dev
 ```
 Kör därefter installations-skriptet, och starta upp serven med npm run serve.
