@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const authRouthes = require("./routes/authRouthes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Routes
-app.use("/api", authRouthes);
+app.use("/api", authRoutes);
 
 // Validate token 
 function authenticateToken(req, res, next) {
