@@ -12,6 +12,9 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
+// Connect to database
+const db = new sqlite3.Database(process.env.DATABASE);
+
 // Routes
 app.use("/api", authRoutes);
 
